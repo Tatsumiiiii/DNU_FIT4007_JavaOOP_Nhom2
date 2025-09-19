@@ -1,5 +1,6 @@
+import java.util.Scanner;
 public class hungvu {
     public static void main(String[] args) {
-        private String name;
+    System.out.println("Hồ Khắc Sơn");
     }
 }
