@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-
 public class RoomRepository {
     private List<Room> rooms = new ArrayList<>();
     private static final String FILE_PATH = "data/rooms.dat";
@@ -20,7 +19,6 @@ public class RoomRepository {
             throw new RuntimeException("Error loading rooms: " + e.getMessage());
         }
     }
-
 
     public void saveToFile() {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_PATH))) {
