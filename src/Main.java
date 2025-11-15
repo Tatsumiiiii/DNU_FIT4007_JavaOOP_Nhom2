@@ -14,4 +14,10 @@ public class Main {
     private static HotelManager manager;
     private static Scanner scanner = new Scanner(System.in);
 
+    public static void main(String[] args) {
+        manager = new HotelManager();
+        boolean running = true;
+        while (running) {
+            showMenu();
+            int choice = getIntInput("Chọn chức năng: ");
 }
