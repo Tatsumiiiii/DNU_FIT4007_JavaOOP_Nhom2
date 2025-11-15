@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Main {
-
+    private static HotelManager manager;
+    private static Scanner scanner = new Scanner(System.in);
 
 }
