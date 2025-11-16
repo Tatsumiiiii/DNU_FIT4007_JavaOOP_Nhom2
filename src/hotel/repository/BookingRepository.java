@@ -1,52 +1,73 @@
 package hotel.repository;
 
-import hotel.domain.Booking;
+
+import hotel.model.Room;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.io.BufferedWriter;
 
-public class BookingRepository {
-    private List<Booking> bookings = new ArrayList<>();
-    private static final String FILE_PATH = "data/bookings.dat";
+public class RoomRepository implements Repository<Room> {
+    private List<Room> rooms = new ArrayList<>();
 
-
-    public void loadFromFile() {
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILE_PATH))) {
-            bookings = (List<Booking>) ois.readObject();
-        } catch (FileNotFoundException e) {
-
-        } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException("Error loading bookings: " + e.getMessage());
+    @Override
+    public void saveToFile(String filename) throws IOException {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
+            oos.writeObject(rooms);
         }
     }
 
-
-    public void saveToFile() {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_PATH))) {
-            oos.writeObject(bookings);
-        } catch (IOException e) {
-            throw new RuntimeException("Error saving bookings: " + e.getMessage());
+    @Override
+    public void loadFromFile(String filename) throws IOException, ClassNotFoundException {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
+            rooms = (List<Room>) ois.readObject();
         }
     }
 
-    public void addBooking(Booking booking) {
-        bookings.add(booking);
+    @Override
+    public void exportToCSV(String filename) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+            writer.write("ID,Type,BasePrice,Capacity,Status\n");
+            for (Room room : rooms) {
+                writer.write((room.getId() != null ? room.getId() : "") + "," +
+                        (room.getType() != null ? room.getType() : "") + "," +
+                        room.getBasePrice() + "," +
+                        room.getCapacity() + "," +
+                        (room.getStatus() != null ? room.getStatus() : "") + "\n");
+            }
+        }
     }
 
-    public void removeBooking(String id) {
-        bookings.removeIf(b -> b.getId().equals(id));
+    @Override
+    public void importFromCSV(String filename) throws IOException {
+        rooms.clear();
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            String line = reader.readLine();
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                Room room;
+                switch (parts[1]) {
+                    case "Thường": room = new hotel.Model.StandardRoom(); break;
+                    case "VIP": room = new hotel.Model.VipRoom(); break;
+                    case "Suite": room = new hotel.Model.SuiteRoom(); break;
+                    default: room = new hotel.Model.StandardRoom(); break;
+                }
+
+                room.id = parts[0];
+                room.setStatus(Room.RoomStatus.valueOf(parts[4].replace("CÓ_SẴN", "AVAILABLE").replace("ĐÃ_ĐẶT", "BOOKED").replace("ĐANG_SỬ_DỤNG", "OCCUPIED").replace("BẢO_TRÌ", "MAINTENANCE")));
+                rooms.add(room);
+            }
+        }
     }
 
-    public Optional<Booking> findBookingById(String id) {
-        return bookings.stream().filter(b -> b.getId().equals(id)).findFirst();
+    @Override
+    public List<Room> getAll() {
+        return rooms;
     }
 
-    public List<Booking> getAllBookings() {
-        return new ArrayList<>(bookings);
-    }
-    
-    public List<Booking> findBookingsByCustomerId(String customerId) {
-        return bookings.stream().filter(b -> b.getCustomerId().equals(customerId)).toList();
+    @Override
+    public void add(Room item) {
+        rooms.add(item);
     }
 }
+>>>>>>> HoSon
