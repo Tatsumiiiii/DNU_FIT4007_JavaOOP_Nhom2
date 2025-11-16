@@ -20,3 +20,18 @@ public class Main {
         while (running) {
             showMainMenu();
             int choice = getIntInput("Chọn chức năng: ");
+            try {
+                switch (choice) {
+                    case 1: manageRooms(); break;
+                    case 2: manageCustomers(); break;
+                    case 3: manageServices(); break;
+                    case 4: bookRoom(); break;
+                    case 5: cancelBooking(); break;
+                    case 6: addServiceToBooking(); break;
+                    case 7: calculateTotalCost(); break;
+                    case 8: processPaymentAndInvoice(); break;
+                    case 9: showStatistics(); break;
+                    case 10: exportImportData(); break;
+                    case 0: running = false; break;
+                    default: System.out.println("Lựa chọn không hợp lệ.");
+                }
