@@ -3,6 +3,7 @@ package hotel.model;
 import java.io.Serializable;
 public abstract class Person implements Serializable {
     private static final long serialVersionUID = 1L;
+    private static int customerCounter = 1;
     private String id;
     private String name;
     private String phone;
@@ -15,6 +16,10 @@ public abstract class Person implements Serializable {
         this.phone = phone;
         this.email = email;
         this.address = address;
+    }
+
+    public static String generateCustomerId() {
+        return "C" + customerCounter++;
     }
 
     public String getId() {
