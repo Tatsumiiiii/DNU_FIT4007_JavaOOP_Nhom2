@@ -1,8 +1,8 @@
-package hotel;
+package hotel.Cli;
 
 import hotel.domain.HotelManager;
-import hotel.exceptionHandling.*;
-import hotel.model.*;
+import hotel.ExceptionHandling.*;
+import hotel.Model.*;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -18,6 +18,5 @@ public class Main {
         manager = new HotelManager();
         boolean running = true;
         while (running) {
-            showMenu();
+            showMainMenu();
             int choice = getIntInput("Chọn chức năng: ");
-}
