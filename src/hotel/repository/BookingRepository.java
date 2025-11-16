@@ -1,71 +1,64 @@
 package hotel.repository;
 
-import hotel.model.Room;
+import hotel.domain.Booking;
 import java.io.*;
+import java.io.BufferedWriter;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.io.BufferedWriter;
 
-public class RoomRepository implements Repository<Room> {
-    private List<Room> rooms = new ArrayList<>();
+public class BookingRepository implements Repository<Booking> {
+    private List<Booking> bookings = new ArrayList<>();  // Đúng field
 
     @Override
     public void saveToFile(String filename) throws IOException {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
-            oos.writeObject(rooms);
+            oos.writeObject(bookings);  // Dùng bookings
         }
     }
 
     @Override
     public void loadFromFile(String filename) throws IOException, ClassNotFoundException {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
-            rooms = (List<Room>) ois.readObject();
+            bookings = (List<Booking>) ois.readObject();  // Dùng bookings
         }
     }
 
     @Override
     public void exportToCSV(String filename) throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
-            writer.write("ID,Type,BasePrice,Capacity,Status\n");
-            for (Room room : rooms) {
-                writer.write((room.getId() != null ? room.getId() : "") + "," +
-                        (room.getType() != null ? room.getType() : "") + "," +
-                        room.getBasePrice() + "," +
-                        room.getCapacity() + "," +
-                        (room.getStatus() != null ? room.getStatus() : "") + "\n");
+            writer.write("ID,CustomerID,RoomID,CheckIn,CheckOut,TotalCost,IsCancelled\n");
+            for (Booking booking : bookings) {  // Dùng bookings
+                writer.write((booking.getId() != null ? booking.getId() : "") + "," +
+                        (booking.getCustomerId() != null ? booking.getCustomerId() : "") + "," +
+                        (booking.getRoomId() != null ? booking.getRoomId() : "") + "," +
+                        (booking.getCheckIn() != null ? booking.getCheckIn() : "") + "," +
+                        (booking.getCheckOut() != null ? booking.getCheckOut() : "") + "," +
+                        booking.getTotalCost() + "," +
+                        booking.isCancelled() + "\n");
             }
         }
     }
 
     @Override
     public void importFromCSV(String filename) throws IOException {
-        rooms.clear();
+        bookings.clear();  // Dùng bookings
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
-            String line = reader.readLine();
+            String line = reader.readLine(); // Skip header
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
-                Room room;
-                switch (parts[1]) {
-                    case "Thường": room = new hotel.Model.StandardRoom(); break;
-                    case "VIP": room = new hotel.Model.VipRoom(); break;
-                    case "Suite": room = new hotel.Model.SuiteRoom(); break;
-                    default: room = new hotel.Model.StandardRoom(); break;
-                }
-
-                room.id = parts[0];
-                room.setStatus(Room.RoomStatus.valueOf(parts[4].replace("CÓ_SẴN", "AVAILABLE").replace("ĐÃ_ĐẶT", "BOOKED").replace("ĐANG_SỬ_DỤNG", "OCCUPIED").replace("BẢO_TRÌ", "MAINTENANCE")));
-                rooms.add(room);
+                Booking booking = new Booking(parts[1], parts[2], LocalDate.parse(parts[3]), LocalDate.parse(parts[4]));
+                booking.setTotalCost(Double.parseDouble(parts[5]));
+                booking.setId(parts[0]);  // Set ID từ CSV
+                bookings.add(booking);  // Dùng bookings
             }
         }
     }
 
     @Override
-    public List<Room> getAll() {
-        return rooms;
-    }
+    public List<Booking> getAll() { return bookings; }  // Dùng bookings
 
     @Override
-    public void add(Room item) {
-        rooms.add(item);
-    }
+    public void add(Booking item) { bookings.add(item); }  // Dùng bookings
 }
+
