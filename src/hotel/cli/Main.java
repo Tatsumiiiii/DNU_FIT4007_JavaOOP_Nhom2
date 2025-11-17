@@ -1,5 +1,5 @@
 package hotel.cli;
 
-public class Menu {
+public class Main {
 
 }
