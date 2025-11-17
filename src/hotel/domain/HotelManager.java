@@ -141,4 +141,42 @@ public class HotelManager implements Persistable {
             System.out.println("Lỗi tạo file CSV mẫu: " + e.getMessage());
         }
     }
+
+    public void addRoom(Room room) {
+        roomRepo.add(room);
+    }
+    public void updateRoom(String roomId, Room updatedRoom) throws RoomNotAvailableException {
+        Room room = findRoomById(roomId);
+        if (room == null) throw new RoomNotAvailableException("Không tìm thấy phòng!");
+        room.setStatus(updatedRoom.getStatus());
+    }
+    public void deleteRoom(String roomId) throws RoomNotAvailableException {
+        Room room = findRoomById(roomId);
+        if (room == null) throw new RoomNotAvailableException("Không tìm thấy phòng!");
+        roomRepo.getAll().remove(room);
+    }
+    public Room findRoomById(String roomId) {
+        return roomRepo.getAll().stream().filter(r -> r.getId().equals(roomId)).findFirst().orElse(null);
+    }
+
+    public void addCustomer(Customer customer) { customerRepo.add(customer); }
+    public void updateCustomer(String customerId, Customer updatedCustomer) throws CustomerNotFoundException {
+        Customer customer = findCustomerById(customerId);
+        if (customer == null) throw new CustomerNotFoundException("Không tìm thấy khách hàng.");
+    }
+    public void deleteCustomer(String customerId) throws CustomerNotFoundException {
+        Customer customer = findCustomerById(customerId);
+        if (customer == null) throw new CustomerNotFoundException("Không tìm thấy khách hàng.");
+        customerRepo.getAll().remove(customer);
+    }
+    public Customer findCustomerById(String customerId) {
+        return customerRepo.getAll().stream().filter(c -> c.getId().equals(customerId)).findFirst().orElse(null);
+    }
+    public List<Customer> searchCustomers(String name, String phone, String email) {
+        return customerRepo.getAll().stream()
+                .filter(c -> (name == null || c.getName().contains(name)) &&
+                        (phone == null || c.getPhone().contains(phone)) &&
+                        (email == null || c.getEmail().contains(email)))
+                .collect(Collectors.toList());
+    }
 }
