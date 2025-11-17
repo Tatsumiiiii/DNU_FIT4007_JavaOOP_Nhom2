@@ -1,8 +1,8 @@
-package hotel.Cli;
+package hotel.cli;
 
 import hotel.domain.HotelManager;
-import hotel.ExceptionHandling.*;
-import hotel.Model.*;
+import hotel.exceptionhandling.*;
+import hotel.model.*;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
