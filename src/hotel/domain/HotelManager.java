@@ -179,4 +179,34 @@ public class HotelManager implements Persistable {
                         (email == null || c.getEmail().contains(email)))
                 .collect(Collectors.toList());
     }
+
+    public void addService(Service service) {
+        serviceRepo.add(service);
+    }
+    public Service findServiceById(String serviceId) {
+        return serviceRepo.getAll().stream().filter(s -> s.getId().equals(serviceId)).findFirst().orElse(null);
+    }
+
+    public Booking bookRoom(String customerId, String roomId, LocalDate checkIn, LocalDate checkOut) throws Exception {
+        Customer customer = findCustomerById(customerId);
+        Room room = findRoomById(roomId);
+        if (customer == null) throw new CustomerNotFoundException("Không tìm thấy khách hàng.");
+        if (room == null) throw new RoomNotAvailableException("Không tìm thấy phòng!");
+        Booking booking = new Booking(customerId, roomId, checkIn, checkOut);
+        booking.confirmBooking(room);
+        bookingRepo.add(booking);
+        return booking;
+    }
+
+    public double cancelBooking(String bookingId, LocalDate cancelDate) throws Exception {
+        Booking booking = findBookingById(bookingId);
+        if (booking == null) throw new BookingNotFoundException("Không tìm thấy thông tin đặt phòng trong hệ thống!");
+        Room room = findRoomById(booking.getRoomId());
+        double refund = booking.cancelBooking(room, cancelDate);
+        return refund;
+    }
+
+    public Booking findBookingById(String bookingId) {
+        return bookingRepo.getAll().stream().filter(b -> b.getId().equals(bookingId)).findFirst().orElse(null);
+    }
 }
