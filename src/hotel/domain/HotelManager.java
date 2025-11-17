@@ -240,4 +240,27 @@ public class HotelManager implements Persistable {
                 .mapToDouble(Payment::getAmount)
                 .sum();
     }
+
+    public double getRevenueByDay(int year, int month, int day) {
+        LocalDate date = LocalDate.of(year, month, day);
+        return payments.stream()
+                .filter(p -> p.getDate().equals(date))
+                .mapToDouble(Payment::getAmount)
+                .sum();
+    }
+
+    public List<Customer> getTop3CustomersByServices() {
+        Map<String, Long> serviceCount = new HashMap<>();
+        for (Booking booking : bookingRepo.getAll()) {
+            if (booking != null && booking.getCustomerId() != null && booking.getServices() != null) {
+                serviceCount.put(booking.getCustomerId(), serviceCount.getOrDefault(booking.getCustomerId(), 0L) + booking.getServices().size());
+            }
+        }
+        return serviceCount.entrySet().stream()
+                .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
+                .limit(3)
+                .map(e -> findCustomerById(e.getKey()))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+    }
 }
