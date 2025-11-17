@@ -35,3 +35,14 @@ public class Main {
                     case 0: running = false; break;
                     default: System.out.println("Lựa chọn không hợp lệ.");
                 }
+            } catch (Exception e) {
+                System.out.println("Lỗi: " + e.getMessage());
+            }
+        }
+        try {
+            manager.saveAll();
+            System.out.println("Dữ liệu đã được lưu. Thoát chương trình...");
+        } catch (IOException e) {
+            System.out.println("Lỗi lưu dữ liệu: " + e.getMessage());
+        }
+    }
