@@ -209,4 +209,35 @@ public class HotelManager implements Persistable {
     public Booking findBookingById(String bookingId) {
         return bookingRepo.getAll().stream().filter(b -> b.getId().equals(bookingId)).findFirst().orElse(null);
     }
+
+    public Invoice createInvoice(String bookingId) throws BookingNotFoundException {
+        Booking booking = findBookingById(bookingId);
+        if (booking == null) throw new BookingNotFoundException("Không tìm thấy thông tin đặt phòng trong hệ thống!");
+        double total = booking.getTotalCost();
+        String details = "Phòng: " + booking.getRoomId() + ", Dịch vụ: " + booking.getServices().size();
+        Invoice invoice = new Invoice(bookingId, total, details);
+        invoiceRepo.add(invoice);
+        return invoice;
+    }
+
+    public Payment processPayment(String invoiceId, double amount) {
+        Payment payment = new Payment(invoiceId, amount);
+        payments.add(payment);
+        return payment;
+    }
+
+    public List<Room> getAvailableRooms(LocalDate date) {
+        return roomRepo.getAll().stream()
+                .filter(r -> r.getStatus() == Room.RoomStatus.AVAILABLE)
+                .collect(Collectors.toList());
+    }
+
+    public double getRevenueByMonth(int year, int month) {
+        LocalDate start = LocalDate.of(year, month, 1);
+        LocalDate end = start.plusMonths(1).minusDays(1);
+        return payments.stream()
+                .filter(p -> p.getDate().isAfter(start.minusDays(1)) && p.getDate().isBefore(end.plusDays(1)))
+                .mapToDouble(Payment::getAmount)
+                .sum();
+    }
 }
