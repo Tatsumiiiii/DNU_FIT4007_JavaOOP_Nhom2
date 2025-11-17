@@ -55,6 +55,7 @@ public class RoomRepository implements Repository<Room> {
                 room.id = parts[0];
                 room.setStatus(Room.RoomStatus.valueOf(parts[4].replace("CÓ_SẴN", "AVAILABLE").replace("ĐÃ_ĐẶT", "BOOKED").replace("ĐANG_SỬ_DỤNG", "OCCUPIED").replace("BẢO_TRÌ", "MAINTENANCE")));
                 rooms.add(room);
+
             }
         }
     }
