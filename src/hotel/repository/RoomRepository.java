@@ -1,6 +1,6 @@
 package hotel.repository;
 
-import hotel.Model.Room;
+import hotel.model.Room;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
