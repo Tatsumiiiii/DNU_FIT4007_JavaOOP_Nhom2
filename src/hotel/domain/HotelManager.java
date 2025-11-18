@@ -331,4 +331,11 @@ public class HotelManager implements Persistable {
             }
         }
     }
+
+    public void saveAll() throws IOException {
+        saveToFile("");
+    }
+    public void loadAll() throws IOException, ClassNotFoundException {
+        loadFromFile("");
+    }
 }
