@@ -212,3 +212,14 @@ public class Main {
         manager.addCustomer(customer);
         System.out.println("Thêm khách hàng thành công. ID: " + customer.getId());
     }
+
+    private static void updateCustomer() {
+        listCustomers();
+        String customerId = getStringInput("Nhập ID khách hàng cần sửa: ");
+        try {
+            manager.updateCustomer(customerId, null);
+            System.out.println("Sửa khách hàng thành công.");
+        } catch (Exception e) {
+            System.out.println("Lỗi: " + e.getMessage());
+        }
+    }
