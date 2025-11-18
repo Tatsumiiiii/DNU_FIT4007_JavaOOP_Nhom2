@@ -61,3 +61,24 @@ public class Main {
         System.out.println("10. Xuất/Nhập dữ liệu");
         System.out.println("0. Thoát");
     }
+
+    private static void manageRooms() {
+        boolean back = false;
+        while (!back) {
+            System.out.println("\n--- Quản Lý Phòng ---");
+            System.out.println("1. Thêm phòng");
+            System.out.println("2. Sửa phòng");
+            System.out.println("3. Xóa phòng");
+            System.out.println("4. Danh sách phòng");
+            System.out.println("0. Quay lại");
+            int choice = getIntInput("Chọn: ");
+            switch (choice) {
+                case 1: addRoom(); break;
+                case 2: updateRoom(); break;
+                case 3: deleteRoom(); break;
+                case 4: listRooms(); break;
+                case 0: back = true; break;
+                default: System.out.println("Lựa chọn không hợp lệ.");
+            }
+        }
+    }
