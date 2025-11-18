@@ -154,3 +154,17 @@ public class Main {
             }
         }
     }
+
+    private static void addRoom() {
+        System.out.println("Loại phòng: 1. Thường, 2. VIP, 3. Suite");
+        int type = getIntInput("Chọn loại: ");
+        Room room = null;
+        switch (type) {
+            case 1: room = new hotel.Model.StandardRoom(); break;
+            case 2: room = new hotel.Model.VipRoom(); break;
+            case 3: room = new hotel.Model.SuiteRoom(); break;
+            default: System.out.println("Loại không hợp lệ."); return;
+        }
+        manager.addRoom(room);
+        System.out.println("Thêm phòng thành công. ID: " + room.getId());
+    }
