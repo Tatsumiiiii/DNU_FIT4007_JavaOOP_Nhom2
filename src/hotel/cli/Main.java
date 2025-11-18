@@ -223,3 +223,14 @@ public class Main {
             System.out.println("Lỗi: " + e.getMessage());
         }
     }
+
+    private static void deleteCustomer() {
+        listCustomers();
+        String customerId = getStringInput("Nhập ID khách hàng cần xóa: ");
+        try {
+            manager.deleteCustomer(customerId);
+            System.out.println("Xóa khách hàng thành công.");
+        } catch (Exception e) {
+            System.out.println("Lỗi: " + e.getMessage());
+        }
+    }
