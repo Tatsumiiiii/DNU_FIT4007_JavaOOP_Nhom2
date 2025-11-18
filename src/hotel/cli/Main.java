@@ -202,3 +202,13 @@ public class Main {
             System.out.println("Lỗi: " + e.getMessage());
         }
     }
+
+    private static void addCustomer() {
+        String name = getStringInput("Nhập tên: ");
+        String phone = getStringInput("Nhập số điện thoại: ");
+        String email = getStringInput("Nhập email: ");
+        String address = getStringInput("Nhập địa chỉ: ");
+        Customer customer = new Customer(name, phone, email, address);
+        manager.addCustomer(customer);
+        System.out.println("Thêm khách hàng thành công. ID: " + customer.getId());
+    }
