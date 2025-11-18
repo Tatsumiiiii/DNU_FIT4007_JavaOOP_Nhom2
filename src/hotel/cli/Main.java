@@ -191,3 +191,14 @@ public class Main {
             System.out.println("Lỗi: " + e.getMessage());
         }
     }
+
+    private static void deleteRoom() {
+        listRooms();
+        String roomId = getStringInput("Nhập ID phòng cần xóa: ");
+        try {
+            manager.deleteRoom(roomId);
+            System.out.println("Xóa phòng thành công.");
+        } catch (Exception e) {
+            System.out.println("Lỗi: " + e.getMessage());
+        }
+    }
