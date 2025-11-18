@@ -263,4 +263,72 @@ public class HotelManager implements Persistable {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
+    @Override
+    public void saveToFile(String filename) throws IOException {
+        roomRepo.saveToFile("rooms.dat");
+        customerRepo.saveToFile("customers.dat");
+        serviceRepo.saveToFile("services.dat");
+        bookingRepo.saveToFile("bookings.dat");
+        invoiceRepo.saveToFile("invoices.dat");
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("payments.dat"))) {
+            oos.writeObject(payments);
+        }
+    }
+
+    @Override
+    public void loadFromFile(String filename) throws IOException, ClassNotFoundException {
+        roomRepo.loadFromFile("rooms.dat");
+        customerRepo.loadFromFile("customers.dat");
+        serviceRepo.loadFromFile("services.dat");
+        bookingRepo.loadFromFile("bookings.dat");
+        invoiceRepo.loadFromFile("invoices.dat");
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("payments.dat"))) {
+            payments = (List<Payment>) ois.readObject();
+        }
+    }
+
+    public void exportAllToCSV() throws IOException {
+        roomRepo.exportToCSV("src/hotel/data/rooms.csv");
+        customerRepo.exportToCSV("src/hotel/data/customers.csv");
+        serviceRepo.exportToCSV("src/hotel/data/services.csv");
+        bookingRepo.exportToCSV("src/hotel/data/bookings.csv");
+        invoiceRepo.exportToCSV("src/hotel/data/invoices.csv");
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("src/hotel/data/payments.csv"))) {
+            writer.write("ID,InvoiceID,Amount,Date\n");
+            for (Payment p : payments) {
+                writer.write((p.getId() != null ? p.getId() : "") + "," +
+                        (p.getInvoiceId() != null ? p.getInvoiceId() : "") + "," +
+                        p.getAmount() + "," +
+                        (p.getDate() != null ? p.getDate() : "") + "\n");
+            }
+        }
+        // Thêm revenue.csv
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("src/hotel/data/revenue.csv"))) {
+            writer.write("Date,Revenue\n");
+            Map<LocalDate, Double> dailyRevenue = new HashMap<>();
+            for (Payment p : payments) {
+                dailyRevenue.put(p.getDate(), dailyRevenue.getOrDefault(p.getDate(), 0.0) + p.getAmount());
+            }
+            for (Map.Entry<LocalDate, Double> entry : dailyRevenue.entrySet()) {
+                writer.write(entry.getKey() + "," + entry.getValue() + "\n");
+            }
+        }
+    }
+
+    public void importAllFromCSV() throws IOException {
+        roomRepo.importFromCSV("src/hotel/data/rooms.csv");
+        customerRepo.importFromCSV("src/hotel/data/customers.csv");
+        serviceRepo.importFromCSV("src/hotel/data/services.csv");
+        bookingRepo.importFromCSV("src/hotel/data/bookings.csv");
+        invoiceRepo.importFromCSV("src/hotel/data/invoices.csv");
+        payments.clear();
+        try (BufferedReader reader = new BufferedReader(new FileReader("src/hotel/data/payments.csv"))) {
+            String line = reader.readLine(); // Skip header
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                Payment payment = new Payment(parts[1], Double.parseDouble(parts[2]));
+                payments.add(payment);
+            }
+        }
+    }
 }
