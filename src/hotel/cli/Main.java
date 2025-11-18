@@ -103,3 +103,18 @@ public class Main {
             }
         }
     }
+
+    private static void manageServices() {
+        boolean back = false;
+        while (!back) {
+            System.out.println("\n--- Quản Lý Dịch Vụ ---");
+            System.out.println("1. Thêm dịch vụ");
+            System.out.println("0. Quay lại");
+            int choice = getIntInput("Chọn: ");
+            switch (choice) {
+                case 1: addService(); break;
+                case 0: back = true; break;
+                default: System.out.println("Lựa chọn không hợp lệ.");
+            }
+        }
+    }
