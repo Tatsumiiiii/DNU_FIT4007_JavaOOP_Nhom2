@@ -234,3 +234,18 @@ public class Main {
             System.out.println("Lỗi: " + e.getMessage());
         }
     }
+
+    private static void addService() {
+        System.out.println("Loại dịch vụ: 1. Bữa sáng, 2. Spa, 3. Thuê xe, 4. Giặt là");
+        int type = getIntInput("Chọn loại: ");
+        Service service = null;
+        switch (type) {
+            case 1: service = new hotel.Model.BreakfastService(); break;
+            case 2: service = new hotel.Model.SpaService(); break;
+            case 3: service = new hotel.Model.CarRentalService(); break;
+            case 4: service = new hotel.Model.LaundryService(); break;
+            default: System.out.println("Loại không hợp lệ."); return;
+        }
+        manager.addService(service);
+        System.out.println("Thêm dịch vụ thành công. ID: " + service.getId());
+    }
