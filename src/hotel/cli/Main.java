@@ -82,3 +82,24 @@ public class Main {
             }
         }
     }
+
+    private static void manageCustomers() {
+        boolean back = false;
+        while (!back) {
+            System.out.println("\n--- Quản Lý Khách Hàng ---");
+            System.out.println("1. Thêm khách hàng");
+            System.out.println("2. Sửa khách hàng");
+            System.out.println("3. Xóa khách hàng");
+            System.out.println("4. Danh sách khách hàng");
+            System.out.println("0. Quay lại");
+            int choice = getIntInput("Chọn: ");
+            switch (choice) {
+                case 1: addCustomer(); break;
+                case 2: updateCustomer(); break;
+                case 3: deleteCustomer(); break;
+                case 4: listCustomers(); break;
+                case 0: back = true; break;
+                default: System.out.println("Lựa chọn không hợp lệ.");
+            }
+        }
+    }
