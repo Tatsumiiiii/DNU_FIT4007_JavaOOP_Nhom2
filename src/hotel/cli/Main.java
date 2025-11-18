@@ -168,3 +168,26 @@ public class Main {
         manager.addRoom(room);
         System.out.println("Thêm phòng thành công. ID: " + room.getId());
     }
+
+    private static void updateRoom() {
+        listRooms();
+        String roomId = getStringInput("Nhập ID phòng cần sửa: ");
+        System.out.println("Trạng thái mới: 1. CÓ_SẴN, 2. ĐÃ_ĐẶT, 3. ĐANG_SỬ_DỤNG, 4. BẢO_TRÌ");
+        int statusChoice = getIntInput("Chọn trạng thái: ");
+        Room.RoomStatus status = Room.RoomStatus.AVAILABLE;
+        switch (statusChoice) {
+            case 1: status = Room.RoomStatus.AVAILABLE; break;
+            case 2: status = Room.RoomStatus.BOOKED; break;
+            case 3: status = Room.RoomStatus.OCCUPIED; break;
+            case 4: status = Room.RoomStatus.MAINTENANCE; break;
+            default: System.out.println("Trạng thái không hợp lệ."); return;
+        }
+        Room updatedRoom = new hotel.Model.StandardRoom();
+        updatedRoom.setStatus(status);
+        try {
+            manager.updateRoom(roomId, updatedRoom);
+            System.out.println("Sửa phòng thành công.");
+        } catch (Exception e) {
+            System.out.println("Lỗi: " + e.getMessage());
+        }
+    }
