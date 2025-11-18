@@ -118,3 +118,22 @@ public class Main {
             }
         }
     }
+
+    private static void showStatistics() {
+        boolean back = false;
+        while (!back) {
+            System.out.println("\n--- Thống Kê ---");
+            System.out.println("1. Doanh thu theo tháng");
+            System.out.println("2. Top 3 khách hàng");
+            System.out.println("3. Phòng còn trống");
+            System.out.println("0. Quay lại");
+            int choice = getIntInput("Chọn: ");
+            switch (choice) {
+                case 1: showRevenueByMonth(); break;
+                case 2: showTop3Customers(); break;
+                case 3: showAvailableRooms(); break;
+                case 0: back = true; break;
+                default: System.out.println("Lựa chọn không hợp lệ.");
+            }
+        }
+    }
