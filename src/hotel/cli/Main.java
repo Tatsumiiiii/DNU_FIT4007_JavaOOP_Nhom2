@@ -338,3 +338,33 @@ public class Main {
             System.out.println("Lỗi: " + e.getMessage());
         }
     }
+
+    private static void showRevenueByMonth() {
+        int year = getIntInput("Nhập năm: ");
+        int month = getIntInput("Nhập tháng: ");
+        double revenue = manager.getRevenueByMonth(year, month);
+        System.out.println("Doanh thu tháng " + year + "-" + month + ": $" + revenue);
+    }
+
+    private static void showTop3Customers() {
+        List<Customer> top = manager.getTop3CustomersByServices();
+        System.out.println("Top 3 khách hàng sử dụng nhiều dịch vụ nhất:");
+        top.forEach(c -> System.out.println("ID: " + c.getId() + ", Tên: " + c.getName()));
+    }
+
+    private static void showAvailableRooms() {
+        LocalDate date = getDateInput("Nhập ngày để kiểm tra phòng trống");
+        List<Room> available = manager.getAvailableRooms(date);
+        System.out.println("Phòng còn trống vào ngày " + date + ":");
+        available.forEach(r -> System.out.println("ID: " + r.getId() + ", Loại: " + r.getType()));
+    }
+
+    private static void listRooms() {
+        System.out.println("Danh sách phòng:");
+        manager.getRooms().forEach(r -> System.out.println("ID: " + r.getId() + ", Loại: " + r.getType() + ", Trạng thái: " + r.getStatus()));
+    }
+
+    private static void listCustomers() {
+        System.out.println("Danh sách khách hàng:");
+        manager.getCustomers().forEach(c -> System.out.println("ID: " + c.getId() + ", Tên: " + c.getName()));
+    }
