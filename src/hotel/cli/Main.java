@@ -368,3 +368,37 @@ public class Main {
         System.out.println("Danh sách khách hàng:");
         manager.getCustomers().forEach(c -> System.out.println("ID: " + c.getId() + ", Tên: " + c.getName()));
     }
+
+    private static void exportAllToCSV() {
+        try {
+            manager.exportAllToCSV();
+            System.out.println("Xuất tất cả dữ liệu ra CSV thành công.");
+        } catch (IOException e) {
+            System.out.println("Lỗi xuất CSV: " + e.getMessage());
+        }
+    }
+
+    private static void importAllFromCSV() {
+        try {
+            manager.importAllFromCSV();
+            System.out.println("Nhập dữ liệu từ CSV thành công.");
+        } catch (IOException e) {
+            System.out.println("Lỗi nhập CSV: " + e.getMessage());
+        }
+    }
+
+    private static int getIntInput(String prompt) {
+        System.out.print(prompt);
+        return scanner.nextInt();
+    }
+
+    private static String getStringInput(String prompt) {
+        System.out.print(prompt);
+        return scanner.next();
+    }
+
+    private static LocalDate getDateInput(String prompt) {
+        System.out.print(prompt + " (yyyy-MM-dd): ");
+        return LocalDate.parse(scanner.next());
+    }
+}
