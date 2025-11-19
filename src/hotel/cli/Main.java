@@ -249,3 +249,56 @@ public class Main {
         manager.addService(service);
         System.out.println("Thêm dịch vụ thành công. ID: " + service.getId());
     }
+
+    private static void bookRoom() {
+        listCustomers();
+        String customerId = getStringInput("Nhập ID khách hàng: ");
+        listRooms();
+        String roomId = getStringInput("Nhập ID phòng: ");
+        LocalDate checkIn = getDateInput("Ngày nhận phòng");
+        LocalDate checkOut = getDateInput("Ngày trả phòng");
+        try {
+            var booking = manager.bookRoom(customerId, roomId, checkIn, checkOut);
+            System.out.println("Đặt phòng thành công. ID đặt phòng: " + booking.getId());
+        } catch (RoomNotAvailableException e) {
+            System.out.println("Đặt phòng thất bại: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Lỗi: " + e.getMessage());
+        }
+    }
+
+    private static void cancelBooking() {
+        System.out.println("Danh sách đặt phòng:");
+        manager.getBookings().forEach(b -> System.out.println("ID: " + b.getId() + ", Phòng: " + b.getRoomId()));
+        String bookingId = getStringInput("Nhập ID đặt phòng cần hủy: ");
+        LocalDate cancelDate = getDateInput("Ngày hủy");
+        try {
+            double refund = manager.cancelBooking(bookingId, cancelDate);
+            System.out.println("Hủy phòng thành công. Hoàn tiền: $" + refund);
+        } catch (Exception e) {
+            System.out.println("Lỗi: " + e.getMessage());
+        }
+    }
+
+    private static void addServiceToBooking() {
+        System.out.println("Danh sách đặt phòng:");
+        manager.getBookings().forEach(b -> System.out.println("ID: " + b.getId()));
+        String bookingId = getStringInput("Nhập ID đặt phòng: ");
+        var booking = manager.findBookingById(bookingId);
+        if (booking == null) {
+            System.out.println("Không tìm thấy đặt phòng.");
+            return;
+        }
+        System.out.println("Dịch vụ: 1. Bữa sáng, 2. Spa, 3. Thuê xe, 4. Giặt là");
+        int serviceType = getIntInput("Chọn dịch vụ: ");
+        Service service = null;
+        switch (serviceType) {
+            case 1: service = new hotel.Model.BreakfastService(); break;
+            case 2: service = new hotel.Model.SpaService(); break;
+            case 3: service = new hotel.Model.CarRentalService(); break;
+            case 4: service = new hotel.Model.LaundryService(); break;
+            default: System.out.println("Dịch vụ không hợp lệ."); return;
+        }
+        booking.addService(service);
+        System.out.println("Đăng ký dịch vụ thành công.");
+    }
