@@ -302,3 +302,39 @@ public class Main {
         booking.addService(service);
         System.out.println("Đăng ký dịch vụ thành công.");
     }
+
+    private static void calculateTotalCost() {
+        System.out.println("Danh sách đặt phòng:");
+        manager.getBookings().forEach(b -> System.out.println("ID: " + b.getId() + ", Tổng chi phí: $" + b.getTotalCost()));
+        String bookingId = getStringInput("Nhập ID đặt phòng để xem tổng chi phí: ");
+        var booking = manager.findBookingById(bookingId);
+        if (booking != null) {
+            System.out.println("Tổng chi phí: $" + booking.getTotalCost());
+        } else {
+            System.out.println("Không tìm thấy đặt phòng.");
+        }
+    }
+
+    private static void processPaymentAndInvoice() {
+        System.out.println("Danh sách đặt phòng:");
+        manager.getBookings().forEach(b -> System.out.println("ID: " + b.getId()));
+        String bookingId = getStringInput("Nhập ID đặt phòng: ");
+        try {
+            var invoice = manager.createInvoice(bookingId);
+            System.out.println("Tạo hóa đơn thành công. ID: " + invoice.getId() + ", Tổng: $" + invoice.getTotal());
+            // Xuất ra CSV riêng
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter("src/hotel/data/invoice_" + invoice.getId() + ".csv"))) {
+                writer.write("ID,BookingID,Total,Details,Date\n");
+                writer.write(invoice.getId() + "," + invoice.getBookingId() + "," + invoice.getTotal() + "," + invoice.getDetails() + "," + invoice.getDate() + "\n");
+                System.out.println("Xuất hóa đơn ra file src/hotel/data/invoice_" + invoice.getId() + ".csv");
+            } catch (IOException e) {
+                System.out.println("Lỗi xuất CSV: " + e.getMessage());
+            }
+            // Thanh toán
+            double amount = getIntInput("Nhập số tiền thanh toán: ");
+            var payment = manager.processPayment(invoice.getId(), amount);
+            System.out.println("Thanh toán thành công. ID thanh toán: " + payment.getId());
+        } catch (Exception e) {
+            System.out.println("Lỗi: " + e.getMessage());
+        }
+    }
