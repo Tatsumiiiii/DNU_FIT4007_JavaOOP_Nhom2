@@ -4,46 +4,63 @@ import hotel.model.Service;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.io.BufferedWriter;
 
-public class ServiceRepository {
-    private List<Service> services = new ArrayList<>();
-    private static final String FILE_PATH = "data/services.dat";
+public class ServiceRepository implements Repository<Service> {
+    private List<Service> services = new ArrayList<>();  // Đúng field
 
-    // Load từ file
-    public void loadFromFile() {
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILE_PATH))) {
-            services = (List<Service>) ois.readObject();
-        } catch (FileNotFoundException e) {
-            // File chưa tồn tại, bỏ qua
-        } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException("Error loading services: " + e.getMessage());
+    @Override
+    public void saveToFile(String filename) throws IOException {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
+            oos.writeObject(services);  // Dùng services
         }
     }
 
-    // Save vào file
-    public void saveToFile() {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_PATH))) {
-            oos.writeObject(services);
-        } catch (IOException e) {
-            throw new RuntimeException("Error saving services: " + e.getMessage());
+    @Override
+    public void loadFromFile(String filename) throws IOException, ClassNotFoundException {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
+            services = (List<Service>) ois.readObject();  // Dùng services
         }
     }
 
-    // CRUD
-    public void addService(Service service) {
-        services.add(service);
+    @Override
+    public void exportToCSV(String filename) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+            writer.write("ID,Name,Price,Description\n");
+            for (Service service : services) {  // Dùng services
+                writer.write((service.getId() != null ? service.getId() : "") + "," +
+                        (service.getName() != null ? service.getName() : "") + "," +
+                        service.getPrice() + "," +
+                        (service.getDescription() != null ? service.getDescription() : "") + "\n");
+            }
+        }
     }
 
-    public void removeService(String id) {
-        services.removeIf(s -> s.getId().equals(id));
+    @Override
+    public void importFromCSV(String filename) throws IOException {
+        services.clear();  // Dùng services
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            String line = reader.readLine(); // Skip header
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                Service service;
+                switch (parts[1]) {
+                    case "Bữa sáng": service = new hotel.model.BreakfastService(); break;
+                    case "Spa": service = new hotel.model.SpaService(); break;
+                    case "Thuê xe": service = new hotel.model.CarRentalService(); break;
+                    case "Giặt là": service = new hotel.model.LaundryService(); break;
+                    default: service = new hotel.model.BreakfastService(); break;
+                }
+                service.setId(parts[0]);  // Set ID từ CSV
+                services.add(service);  // Dùng services
+            }
+        }
     }
 
-    public Optional<Service> findServiceById(String id) {
-        return services.stream().filter(s -> s.getId().equals(id)).findFirst();
-    }
+    @Override
+    public List<Service> getAll() { return services; }  // Dùng services
 
-    public List<Service> getAllServices() {
-        return new ArrayList<>(services);
-    }
+    @Override
+    public void add(Service item) { services.add(item); }  // Dùng services
 }
+

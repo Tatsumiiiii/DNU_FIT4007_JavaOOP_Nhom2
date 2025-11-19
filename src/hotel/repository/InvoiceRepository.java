@@ -1,63 +1,60 @@
 package hotel.repository;
 
 import hotel.domain.Invoice;
-import hotel.repository.CSVUtils;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.io.BufferedWriter;
 
-public class InvoiceRepository {
-    private List<Invoice> invoices = new ArrayList<>();
-    private static final String FILE_PATH = "data/invoices.dat";
+public class InvoiceRepository implements Repository<Invoice> {
+    private List<Invoice> invoices = new ArrayList<>();  // Đúng field
 
-    // Load từ file
-    public void loadFromFile() {
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILE_PATH))) {
-            invoices = (List<Invoice>) ois.readObject();
-        } catch (FileNotFoundException e) {
-            // File chưa tồn tại, bỏ qua
-        } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException("Error loading invoices: " + e.getMessage());
+    @Override
+    public void saveToFile(String filename) throws IOException {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
+            oos.writeObject(invoices);  // Dùng invoices
         }
     }
 
-    // Save vào file
-    public void saveToFile() {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_PATH))) {
-            oos.writeObject(invoices);
-        } catch (IOException e) {
-            throw new RuntimeException("Error saving invoices: " + e.getMessage());
+    @Override
+    public void loadFromFile(String filename) throws IOException, ClassNotFoundException {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
+            invoices = (List<Invoice>) ois.readObject();  // Dùng invoices
         }
     }
 
-    // CRUD
-    public void addInvoice(Invoice invoice) {
-        invoices.add(invoice);
+    @Override
+    public void exportToCSV(String filename) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+            writer.write("ID,BookingID,Total,Details,Date\n");
+            for (Invoice invoice : invoices) {  // Dùng invoices
+                writer.write((invoice.getId() != null ? invoice.getId() : "") + "," +
+                        (invoice.getBookingId() != null ? invoice.getBookingId() : "") + "," +
+                        invoice.getTotal() + "," +
+                        (invoice.getDetails() != null ? invoice.getDetails() : "") + "," +
+                        (invoice.getDate() != null ? invoice.getDate() : "") + "\n");
+            }
+        }
     }
 
-    public void removeInvoice(String id) {
-        invoices.removeIf(i -> i.getId().equals(id));
+    @Override
+    public void importFromCSV(String filename) throws IOException {
+        invoices.clear();  // Dùng invoices
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            String line = reader.readLine(); // Skip header
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                Invoice invoice = new Invoice(parts[1], Double.parseDouble(parts[2]), parts[3]);
+                invoice.setId(parts[0]);  // Set ID từ CSV
+                invoices.add(invoice);  // Dùng invoices
+            }
+        }
     }
 
-    public Optional<Invoice> findInvoiceById(String id) {
-        return invoices.stream().filter(i -> i.getId().equals(id)).findFirst();
-    }
+    @Override
+    public List<Invoice> getAll() { return invoices; }  // Dùng invoices
 
-    public List<Invoice> getAllInvoices() {
-        return new ArrayList<>(invoices);
-    }
-
-    // Export ra CSV
-    public void exportInvoicesToCSV(String filename) {
-        CSVUtils.exportInvoicesToCSV(invoices, filename);
-    }
-
-    // Tính doanh thu theo tháng (giả sử từ danh sách invoices)
-    public double getRevenueByMonth(int year, int month) {
-        return invoices.stream()
-                .filter(i -> i.getDate().getYear() == year && i.getDate().getMonthValue() == month)
-                .mapToDouble(Invoice::getTotal)
-                .sum();
-    }
+    @Override
+    public void add(Invoice item) { invoices.add(item); }  // Dùng invoices
 }
+
