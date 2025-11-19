@@ -46,10 +46,10 @@ public class RoomRepository implements Repository<Room> {
                 String[] parts = line.split(",");
                 Room room;
                 switch (parts[1]) {
-                    case "Thường": room = new hotel.Model.StandardRoom(); break;
-                    case "VIP": room = new hotel.Model.VipRoom(); break;
-                    case "Suite": room = new hotel.Model.SuiteRoom(); break;
-                    default: room = new hotel.Model.StandardRoom(); break;
+                    case "Thường": room = new hotel.model.StandardRoom(); break;
+                    case "VIP": room = new hotel.model.VipRoom(); break;
+                    case "Suite": room = new hotel.model.SuiteRoom(); break;
+                    default: room = new hotel.model.StandardRoom(); break;
                 }
 
                 room.id = parts[0];
