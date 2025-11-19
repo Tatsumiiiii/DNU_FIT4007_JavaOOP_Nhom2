@@ -2,7 +2,12 @@ package hotel.cli;
 
 import hotel.domain.HotelManager;
 import hotel.exceptionHandling.*;
+import hotel.exceptionHandling.RoomNotAvailableException;
 import hotel.model.*;
+import hotel.model.Room;
+import hotel.model.Customer;
+import hotel.model.Service;
+import hotel.model.Booking;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -160,9 +165,9 @@ public class Main {
         int type = getIntInput("Chọn loại: ");
         Room room = null;
         switch (type) {
-            case 1: room = new hotel.Model.StandardRoom(); break;
-            case 2: room = new hotel.Model.VipRoom(); break;
-            case 3: room = new hotel.Model.SuiteRoom(); break;
+            case 1: room = new hotel.model.StandardRoom(); break;
+            case 2: room = new hotel.model.VipRoom(); break;
+            case 3: room = new hotel.model.SuiteRoom(); break;
             default: System.out.println("Loại không hợp lệ."); return;
         }
         manager.addRoom(room);
@@ -182,7 +187,7 @@ public class Main {
             case 4: status = Room.RoomStatus.MAINTENANCE; break;
             default: System.out.println("Trạng thái không hợp lệ."); return;
         }
-        Room updatedRoom = new hotel.Model.StandardRoom();
+        Room updatedRoom = new hotel.model.StandardRoom();
         updatedRoom.setStatus(status);
         try {
             manager.updateRoom(roomId, updatedRoom);
@@ -216,6 +221,7 @@ public class Main {
     private static void updateCustomer() {
         listCustomers();
         String customerId = getStringInput("Nhập ID khách hàng cần sửa: ");
+
         try {
             manager.updateCustomer(customerId, null);
             System.out.println("Sửa khách hàng thành công.");
@@ -240,10 +246,10 @@ public class Main {
         int type = getIntInput("Chọn loại: ");
         Service service = null;
         switch (type) {
-            case 1: service = new hotel.Model.BreakfastService(); break;
-            case 2: service = new hotel.Model.SpaService(); break;
-            case 3: service = new hotel.Model.CarRentalService(); break;
-            case 4: service = new hotel.Model.LaundryService(); break;
+            case 1: service = new hotel.model.BreakfastService(); break;
+            case 2: service = new hotel.model.SpaService(); break;
+            case 3: service = new hotel.model.CarRentalService(); break;
+            case 4: service = new hotel.model.LaundryService(); break;
             default: System.out.println("Loại không hợp lệ."); return;
         }
         manager.addService(service);
@@ -293,10 +299,10 @@ public class Main {
         int serviceType = getIntInput("Chọn dịch vụ: ");
         Service service = null;
         switch (serviceType) {
-            case 1: service = new hotel.Model.BreakfastService(); break;
-            case 2: service = new hotel.Model.SpaService(); break;
-            case 3: service = new hotel.Model.CarRentalService(); break;
-            case 4: service = new hotel.Model.LaundryService(); break;
+            case 1: service = new hotel.model.BreakfastService(); break;
+            case 2: service = new hotel.model.SpaService(); break;
+            case 3: service = new hotel.model.CarRentalService(); break;
+            case 4: service = new hotel.model.LaundryService(); break;
             default: System.out.println("Dịch vụ không hợp lệ."); return;
         }
         booking.addService(service);
