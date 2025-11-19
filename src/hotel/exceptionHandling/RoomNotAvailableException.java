@@ -5,5 +5,4 @@ public class RoomNotAvailableException extends Exception {
             super(message);
         }
     }
-}
 
