@@ -1,8 +1,13 @@
-package hotel.Cli;
+package hotel.cli;
 
 import hotel.domain.HotelManager;
-import hotel.ExceptionHandling.*;
-import hotel.Model.*;
+import hotel.exceptionHandling.*;
+import hotel.exceptionHandling.RoomNotAvailableException;
+import hotel.model.*;
+import hotel.model.Room;
+import hotel.model.Customer;
+import hotel.model.Service;
+import hotel.model.Booking;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -90,16 +95,14 @@ public class Main {
             System.out.println("1. Thêm khách hàng");
             System.out.println("2. Sửa khách hàng");
             System.out.println("3. Xóa khách hàng");
-            System.out.println("4. Tìm kiếm khách hàng");  // Thêm
-            System.out.println("5. Danh sách khách hàng");
+            System.out.println("4. Danh sách khách hàng");
             System.out.println("0. Quay lại");
             int choice = getIntInput("Chọn: ");
             switch (choice) {
                 case 1: addCustomer(); break;
                 case 2: updateCustomer(); break;
                 case 3: deleteCustomer(); break;
-                case 4: searchCustomer(); break;  // Thêm
-                case 5: listCustomers(); break;
+                case 4: listCustomers(); break;
                 case 0: back = true; break;
                 default: System.out.println("Lựa chọn không hợp lệ.");
             }
@@ -162,9 +165,9 @@ public class Main {
         int type = getIntInput("Chọn loại: ");
         Room room = null;
         switch (type) {
-            case 1: room = new hotel.Model.StandardRoom(); break;
-            case 2: room = new hotel.Model.VipRoom(); break;
-            case 3: room = new hotel.Model.SuiteRoom(); break;
+            case 1: room = new hotel.model.StandardRoom(); break;
+            case 2: room = new hotel.model.VipRoom(); break;
+            case 3: room = new hotel.model.SuiteRoom(); break;
             default: System.out.println("Loại không hợp lệ."); return;
         }
         manager.addRoom(room);
@@ -184,7 +187,7 @@ public class Main {
             case 4: status = Room.RoomStatus.MAINTENANCE; break;
             default: System.out.println("Trạng thái không hợp lệ."); return;
         }
-        Room updatedRoom = new hotel.Model.StandardRoom();
+        Room updatedRoom = new hotel.model.StandardRoom();
         updatedRoom.setStatus(status);
         try {
             manager.updateRoom(roomId, updatedRoom);
@@ -218,6 +221,7 @@ public class Main {
     private static void updateCustomer() {
         listCustomers();
         String customerId = getStringInput("Nhập ID khách hàng cần sửa: ");
+
         try {
             manager.updateCustomer(customerId, null);
             System.out.println("Sửa khách hàng thành công.");
@@ -237,28 +241,15 @@ public class Main {
         }
     }
 
-    private static void searchCustomer() {
-        String name = getStringInput("Nhập tên (để trống nếu không tìm): ");
-        String phone = getStringInput("Nhập số điện thoại (để trống nếu không tìm): ");
-        String email = getStringInput("Nhập email (để trống nếu không tìm): ");
-        List<Customer> results = manager.searchCustomers(name.isEmpty() ? null : name, phone.isEmpty() ? null : phone, email.isEmpty() ? null : email);
-        System.out.println("Kết quả tìm kiếm:");
-        if (results.isEmpty()) {
-            System.out.println("Không tìm thấy khách hàng nào.");
-        } else {
-            results.forEach(c -> System.out.println("ID: " + c.getId() + ", Tên: " + c.getName() + ", SĐT: " + c.getPhone() + ", Email: " + c.getEmail()));
-        }
-    }
-
     private static void addService() {
         System.out.println("Loại dịch vụ: 1. Bữa sáng, 2. Spa, 3. Thuê xe, 4. Giặt là");
         int type = getIntInput("Chọn loại: ");
         Service service = null;
         switch (type) {
-            case 1: service = new hotel.Model.BreakfastService(); break;
-            case 2: service = new hotel.Model.SpaService(); break;
-            case 3: service = new hotel.Model.CarRentalService(); break;
-            case 4: service = new hotel.Model.LaundryService(); break;
+            case 1: service = new hotel.model.BreakfastService(); break;
+            case 2: service = new hotel.model.SpaService(); break;
+            case 3: service = new hotel.model.CarRentalService(); break;
+            case 4: service = new hotel.model.LaundryService(); break;
             default: System.out.println("Loại không hợp lệ."); return;
         }
         manager.addService(service);
@@ -308,10 +299,10 @@ public class Main {
         int serviceType = getIntInput("Chọn dịch vụ: ");
         Service service = null;
         switch (serviceType) {
-            case 1: service = new hotel.Model.BreakfastService(); break;
-            case 2: service = new hotel.Model.SpaService(); break;
-            case 3: service = new hotel.Model.CarRentalService(); break;
-            case 4: service = new hotel.Model.LaundryService(); break;
+            case 1: service = new hotel.model.BreakfastService(); break;
+            case 2: service = new hotel.model.SpaService(); break;
+            case 3: service = new hotel.model.CarRentalService(); break;
+            case 4: service = new hotel.model.LaundryService(); break;
             default: System.out.println("Dịch vụ không hợp lệ."); return;
         }
         booking.addService(service);
@@ -404,23 +395,16 @@ public class Main {
 
     private static int getIntInput(String prompt) {
         System.out.print(prompt);
-        while (!scanner.hasNextInt()) {
-            scanner.nextLine();
-            System.out.print("Nhập số hợp lệ: ");
-        }
-        int value = scanner.nextInt();
-        scanner.nextLine();
-        return value;
+        return scanner.nextInt();
     }
 
     private static String getStringInput(String prompt) {
         System.out.print(prompt);
-        return scanner.nextLine();
+        return scanner.next();
     }
 
     private static LocalDate getDateInput(String prompt) {
         System.out.print(prompt + " (yyyy-MM-dd): ");
-        return LocalDate.parse(scanner.nextLine());
+        return LocalDate.parse(scanner.next());
     }
-
 }
