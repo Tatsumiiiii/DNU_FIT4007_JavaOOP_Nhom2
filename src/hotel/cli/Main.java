@@ -1,13 +1,8 @@
-package hotel.cli;
+package hotel.Cli;
 
 import hotel.domain.HotelManager;
 import hotel.exceptionHandling.*;
-import hotel.exceptionHandling.RoomNotAvailableException;
 import hotel.model.*;
-import hotel.model.Room;
-import hotel.model.Customer;
-import hotel.model.Service;
-import hotel.model.Booking;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -95,14 +90,16 @@ public class Main {
             System.out.println("1. Thêm khách hàng");
             System.out.println("2. Sửa khách hàng");
             System.out.println("3. Xóa khách hàng");
-            System.out.println("4. Danh sách khách hàng");
+            System.out.println("4. Tìm kiếm khách hàng");  // Thêm
+            System.out.println("5. Danh sách khách hàng");
             System.out.println("0. Quay lại");
             int choice = getIntInput("Chọn: ");
             switch (choice) {
                 case 1: addCustomer(); break;
                 case 2: updateCustomer(); break;
                 case 3: deleteCustomer(); break;
-                case 4: listCustomers(); break;
+                case 4: searchCustomer(); break;  // Thêm
+                case 5: listCustomers(); break;
                 case 0: back = true; break;
                 default: System.out.println("Lựa chọn không hợp lệ.");
             }
@@ -221,7 +218,6 @@ public class Main {
     private static void updateCustomer() {
         listCustomers();
         String customerId = getStringInput("Nhập ID khách hàng cần sửa: ");
-
         try {
             manager.updateCustomer(customerId, null);
             System.out.println("Sửa khách hàng thành công.");
@@ -238,6 +234,19 @@ public class Main {
             System.out.println("Xóa khách hàng thành công.");
         } catch (Exception e) {
             System.out.println("Lỗi: " + e.getMessage());
+        }
+    }
+
+    private static void searchCustomer() {
+        String name = getStringInput("Nhập tên (để trống nếu không tìm): ");
+        String phone = getStringInput("Nhập số điện thoại (để trống nếu không tìm): ");
+        String email = getStringInput("Nhập email (để trống nếu không tìm): ");
+        List<Customer> results = manager.searchCustomers(name.isEmpty() ? null : name, phone.isEmpty() ? null : phone, email.isEmpty() ? null : email);
+        System.out.println("Kết quả tìm kiếm:");
+        if (results.isEmpty()) {
+            System.out.println("Không tìm thấy khách hàng nào.");
+        } else {
+            results.forEach(c -> System.out.println("ID: " + c.getId() + ", Tên: " + c.getName() + ", SĐT: " + c.getPhone() + ", Email: " + c.getEmail()));
         }
     }
 
@@ -395,16 +404,23 @@ public class Main {
 
     private static int getIntInput(String prompt) {
         System.out.print(prompt);
-        return scanner.nextInt();
+        while (!scanner.hasNextInt()) {
+            scanner.nextLine();
+            System.out.print("Nhập số hợp lệ: ");
+        }
+        int value = scanner.nextInt();
+        scanner.nextLine();
+        return value;
     }
 
     private static String getStringInput(String prompt) {
         System.out.print(prompt);
-        return scanner.next();
+        return scanner.nextLine();
     }
 
     private static LocalDate getDateInput(String prompt) {
         System.out.print(prompt + " (yyyy-MM-dd): ");
-        return LocalDate.parse(scanner.next());
+        return LocalDate.parse(scanner.nextLine());
     }
+
 }
