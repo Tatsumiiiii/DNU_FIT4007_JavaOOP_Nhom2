@@ -1,0 +1,21 @@
+ID,Type,BasePrice,Capacity,Status
+R1,Phòng tiêu chuẩn,100.0,2,AVAILABLE
+R2,Phòng tiêu chuẩn,100.0,2,AVAILABLE
+R3,Phòng tiêu chuẩn,100.0,2,AVAILABLE
+R4,Phòng tiêu chuẩn,100.0,2,AVAILABLE
+R5,Phòng tiêu chuẩn,100.0,2,AVAILABLE
+R6,Phòng tiêu chuẩn,100.0,2,AVAILABLE
+R7,Phòng tiêu chuẩn,100.0,2,AVAILABLE
+R8,Phòng tiêu chuẩn,100.0,2,AVAILABLE
+R9,Phòng tiêu chuẩn,100.0,2,AVAILABLE
+R10,Phòng tiêu chuẩn,100.0,2,AVAILABLE
+R11,Phòng VIP,200.0,4,AVAILABLE
+R12,Phòng VIP,200.0,4,AVAILABLE
+R13,Phòng VIP,200.0,4,AVAILABLE
+R14,Phòng VIP,200.0,4,AVAILABLE
+R15,Phòng VIP,200.0,4,AVAILABLE
+R16,Phòng hạng sang,300.0,6,AVAILABLE
+R17,Phòng hạng sang,300.0,6,AVAILABLE
+R18,Phòng hạng sang,300.0,6,AVAILABLE
+R19,Phòng hạng sang,300.0,6,AVAILABLE
+R20,Phòng hạng sang,300.0,6,AVAILABLE
